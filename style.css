@@ -11,3 +11,11 @@ body {
 .gridCell.blocked {
   background-color: gray;
 }
+
+.gridCell.out-cell {
+  background-color: lightgreen;
+}
+
+.gridCell.in-cell {
+  background-color: coral;
+}

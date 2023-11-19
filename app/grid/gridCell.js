@@ -33,7 +33,15 @@ class GridCell {
     gridElement.appendChild(gridCellElement);
   }
 
-  #renderGridCell() {}
+  #renderGridCell() {
+    const {
+      grid: { numRows, numCols },
+    } = this;
+
+    this.isBlocked = false;
+    this.isOutCell = this.position === "0-0";
+    this.isInCell = this.position === `${numRows - 1}-${numCols - 1}`;
+  }
 
   #renderHtml() {
     const {
@@ -50,7 +58,14 @@ class GridCell {
     });
   }
 
-  renderOutInCells() {}
+  renderOutInCells() {
+    this.gridCellElement.classList[this.isInCell ? "add" : "remove"](
+      "out-cell"
+    );
+    this.gridCellElement.classList[this.isOutCell ? "add" : "remove"](
+      "in-cell"
+    );
+  }
 
   renderBlockedCells() {
     this.gridCellElement.classList[this.isBlocked ? "add" : "remove"](
@@ -68,6 +83,10 @@ class GridCell {
     const { gridCellElement } = this;
 
     gridCellElement.addEventListener("click", () => {
+      if (this.isInCell || this.isOutCell) {
+        return;
+      }
+
       this.isBlocked = !this.isBlocked;
       this.renderBlockedCells();
     });
