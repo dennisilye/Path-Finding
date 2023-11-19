@@ -5,8 +5,42 @@ class Grid {
     generateQueryConstructor.call(this, ...arguments);
   }
 
-  build() {}
+  get gridElement() {
+    return document.querySelector(this.settings.gridSelector);
+  }
+
+  build() {
+    this.#buildGridLayout();
+    this.#buildGridCells();
+    this.#buildGridSvg();
+  }
   draw() {}
+
+  #buildGridLayout() {
+    const { settings, gridElement } = this;
+    const { cellSize, borderSize, borderColor } = settings;
+    const { innerWidth, innerHeight } = window;
+
+    const fullCellSize = cellSize + borderSize * 2;
+    this.numCols = Math.floor(innerWidth / fullCellSize);
+    this.numRows = Math.floor(innerHeight / fullCellSize);
+
+    this.gridWidth = this.numCols * fullCellSize;
+    this.gridHeight = this.numRows * fullCellSize;
+
+    this.gridMarginX = (innerWidth - this.gridWidth - borderSize * 2) / 2;
+    this.gridMarginY = (innerHeight - this.gridHeight - borderSize * 2) / 2;
+
+    Object.assign(gridElement.style, {
+      width: `${this.gridWidth}px`,
+      height: `${this.gridHeight}px`,
+      marginLeft: `${gridMarginX}px`,
+      marginTop: `${gridMarginY}px`,
+      border: `${borderSize}px solid ${borderColor}`,
+    });
+  }
+  #buildGridCells() {}
+  #buildGridSvg() {}
 }
 
 export default Grid;

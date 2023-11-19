@@ -1,10 +1,6 @@
 import Grid from "./app/grid/grid";
-import "./style.css";
+import gridConfig from "./app/config/grid.config";
 
-const grid = new Grid({
-  settings: {
-    gridSelector: "#grid",
-  },
-});
+const grid = new Grid(gridConfig);
 
-grid.draw();
+grid.build();
