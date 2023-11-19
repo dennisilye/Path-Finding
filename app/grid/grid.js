@@ -1,4 +1,5 @@
 import { generateQueryConstructor } from "../utils/object.utils";
+import GridCell from "./gridCell";
 
 class Grid {
   constructor() {
@@ -14,6 +15,7 @@ class Grid {
     this.#buildGridCells();
     this.#buildGridSvg();
   }
+
   draw() {}
 
   #buildGridLayout() {
@@ -34,12 +36,25 @@ class Grid {
     Object.assign(gridElement.style, {
       width: `${this.gridWidth}px`,
       height: `${this.gridHeight}px`,
-      marginLeft: `${gridMarginX}px`,
-      marginTop: `${gridMarginY}px`,
+      marginLeft: `${this.gridMarginX}px`,
+      marginTop: `${this.gridMarginY}px`,
       border: `${borderSize}px solid ${borderColor}`,
     });
   }
-  #buildGridCells() {}
+
+  #buildGridCells() {
+    const { numRows, numCols } = this;
+    this.gridCells = {};
+
+    for (let row = 0; row < numRows; row++) {
+      for (let col = 0; col < numCols; col++) {
+        const gridCell = new GridCell({ grid: this, row, col });
+        gridCell.render();
+        this.gridCells[gridCell.position] = gridCell;
+      }
+    }
+  }
+
   #buildGridSvg() {}
 }
 
