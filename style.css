@@ -7,3 +7,7 @@ body {
 .gridCell {
   float: left;
 }
+
+.gridCell.blocked {
+  background-color: gray;
+}

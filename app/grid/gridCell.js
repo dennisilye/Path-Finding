@@ -49,8 +49,45 @@ class GridCell {
       border: `${borderSize}px solid ${borderColor}`,
     });
   }
+
   renderOutInCells() {}
-  #renderEvents() {}
+
+  renderBlockedCells() {
+    this.gridCellElement.classList[this.isBlocked ? "add" : "remove"](
+      "blocked"
+    );
+  }
+
+  #renderEvents() {
+    this.#renderClickEvent();
+    this.#renderHoverEvent();
+    this.#renderDragDropEvents();
+  }
+
+  #renderClickEvent() {
+    const { gridCellElement } = this;
+
+    gridCellElement.addEventListener("click", () => {
+      this.isBlocked = !this.isBlocked;
+      this.renderBlockedCells();
+    });
+  }
+
+  #renderHoverEvent() {
+    const { gridCellElement } = this;
+
+    gridCellElement.addEventListener("mouseover", () => {
+      if (this.isInCell || this.isOutCell) {
+        gridCellElement.style.cursor = "grab";
+      } else if (!this.isBlocked) {
+        gridCellElement.style.cursor = "pointer";
+      } else {
+        gridCellElement.style.cursor = "crosshair";
+      }
+    });
+  }
+
+  #renderDragDropEvents() {}
 }
 
 export default GridCell;
