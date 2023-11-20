@@ -106,7 +106,51 @@ class GridCell {
     });
   }
 
-  #renderDragDropEvents() {}
+  #renderDragDropEvents() {
+    const { gridCellElement, grid } = this;
+
+    gridCellElement.addEventListener("dragover", (event) => {
+      if (downAllowDrop.call(this)) return;
+      event.preventDefault();
+    });
+
+    gridCellElement.addEventListener("dragstart", (event) => {
+      if (downAllowDrag.call(this)) {
+        event.preventDefault();
+        return;
+      }
+
+      grid.draggedGridCell = this;
+    });
+
+    gridCellElement.addEventListener("drop", () => {
+      this.resetCell();
+
+      this.isOutCell = grid.draggedGridCell.isOutCell;
+      this.isInCell = grid.draggedGridCell.isInCell;
+
+      this.renderOutInCells();
+
+      grid.draggedGridCell.resetCell();
+      // grid.draw();
+    });
+
+    function downAllowDrop() {
+      return !this.isInCell && !this.isInCell;
+    }
+
+    function downAllowDrag() {
+      const { gridCellElement, grid } = this;
+
+      if (grid.draggedGridCell.gridCellElement === gridCellElement) return true;
+      if (grid.draggedGridCell.gridCellElement && this.isInCell) return true;
+      if (grid.draggedGridCell.gridCellElement && this.isOutCell) return true;
+
+      return false;
+    }
+  }
+
+  resetCell() {}
 }
 
 export default GridCell;
