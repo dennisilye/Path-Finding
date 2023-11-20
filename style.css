@@ -4,18 +4,18 @@ body {
   overflow: hidden;
 }
 
-.gridCell {
+.gridcell {
   float: left;
 }
 
-.gridCell.blocked {
+.gridcell.blocked {
   background-color: gray;
 }
 
-.gridCell.out-cell {
+.gridcell.out-cell {
   background-color: lightgreen;
 }
 
-.gridCell.in-cell {
+.gridcell.in-cell {
   background-color: coral;
 }

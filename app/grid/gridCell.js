@@ -9,41 +9,29 @@ class GridCell {
     return `${this.row}-${this.col}`;
   }
 
-  get gridCellElement() {
-    return document.querySelector(`.gridCell[position="${this.position}"]`);
-  }
-
   render() {
-    this.#renderElement();
-    this.#renderGridCell();
-    this.#renderHtml();
-    this.renderOutInCells();
+    this.#renderHtmlElement();
+    this.#renderHtmlStyling();
+    this.#renderHtmlAttributes();
+    this.renderGridCellsDynamics();
     this.#renderEvents();
   }
 
-  #renderElement() {
+  #renderHtmlElement() {
     const {
       grid: { gridElement },
     } = this;
 
     const gridCellElement = document.createElement("div");
-    gridCellElement.classList.add("gridCell");
+
+    gridCellElement.classList.add("gridcell");
     gridCellElement.setAttribute("position", this.position);
 
     gridElement.appendChild(gridCellElement);
+    this.gridCellElement = gridCellElement;
   }
 
-  #renderGridCell() {
-    const {
-      grid: { numRows, numCols },
-    } = this;
-
-    this.isBlocked = false;
-    this.isOutCell = this.position === "0-0";
-    this.isInCell = this.position === `${numRows - 1}-${numCols - 1}`;
-  }
-
-  #renderHtml() {
+  #renderHtmlStyling() {
     const {
       gridCellElement,
       grid: {
@@ -56,20 +44,29 @@ class GridCell {
       height: `${cellSize}px`,
       border: `${borderSize}px solid ${borderColor}`,
     });
+
+    gridCellElement.setAttribute("draggable", true);
   }
 
-  renderOutInCells() {
+  #renderHtmlAttributes() {
+    const {
+      grid: { numRows, numCols },
+    } = this;
+
+    this.isBlocked = false;
+    this.isOutCell = this.position === "0-0";
+    this.isInCell = this.position === `${numRows - 1}-${numCols - 1}`;
+  }
+
+  renderGridCellsDynamics() {
+    this.gridCellElement.classList[this.isBlocked ? "add" : "remove"](
+      "blocked"
+    );
     this.gridCellElement.classList[this.isInCell ? "add" : "remove"](
       "out-cell"
     );
     this.gridCellElement.classList[this.isOutCell ? "add" : "remove"](
       "in-cell"
-    );
-  }
-
-  renderBlockedCells() {
-    this.gridCellElement.classList[this.isBlocked ? "add" : "remove"](
-      "blocked"
     );
   }
 
@@ -88,7 +85,7 @@ class GridCell {
       }
 
       this.isBlocked = !this.isBlocked;
-      this.renderBlockedCells();
+      this.renderGridCellsDynamics();
     });
   }
 
@@ -129,7 +126,7 @@ class GridCell {
       this.isOutCell = grid.draggedGridCell.isOutCell;
       this.isInCell = grid.draggedGridCell.isInCell;
 
-      this.renderOutInCells();
+      this.renderGridCellsDynamics();
 
       grid.draggedGridCell.resetCell();
       // grid.draw();
@@ -150,7 +147,13 @@ class GridCell {
     }
   }
 
-  resetCell() {}
+  resetCell() {
+    this.isInCell = false;
+    this.isOutCell = false;
+    this.isBlocked = false;
+
+    this.renderGridCellsDynamics();
+  }
 }
 
 export default GridCell;
