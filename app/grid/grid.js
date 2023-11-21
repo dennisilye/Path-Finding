@@ -1,5 +1,6 @@
 import { generateQueryConstructor } from "../utils/object.utils";
 import GridCell from "./gridCell";
+import GridDraw from "./gridDraw";
 
 class Grid {
   constructor() {
@@ -16,7 +17,10 @@ class Grid {
     this.#buildGridSvg();
   }
 
-  draw() {}
+  draw() {
+    const gridDraw = new GridDraw({ grid: this });
+    gridDraw.draw();
+  }
 
   #buildGridLayout() {
     const { settings, gridElement } = this;
