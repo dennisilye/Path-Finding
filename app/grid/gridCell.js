@@ -1,20 +1,20 @@
-import { generateQueryConstructor } from "../utils/object.utils";
+import { generateQueryConstructor } from "../utils/object.utils.js";
+import renderEvents from "./gridCell/gridCellEventsMethods.js";
 
 class GridCell {
   constructor() {
     generateQueryConstructor.call(this, ...arguments);
   }
-
   get position() {
     return `${this.row}-${this.col}`;
   }
-
   render() {
     this.#renderHtmlElement();
     this.#renderHtmlStyling();
-    this.#renderHtmlAttributes();
-    this.renderGridCellsDynamics();
-    this.#renderEvents();
+    this.#renderAttributes();
+    this.renderGridcellDynamics();
+
+    renderEvents.call(this);
   }
 
   #renderHtmlElement() {
@@ -22,129 +22,47 @@ class GridCell {
       grid: { gridElement },
     } = this;
 
-    const gridCellElement = document.createElement("div");
+    const gridcellElement = document.createElement("div");
 
-    gridCellElement.classList.add("gridcell");
-    gridCellElement.setAttribute("position", this.position);
+    gridcellElement.classList.add("gridcell");
+    gridcellElement.setAttribute("position", this.position);
 
-    gridElement.appendChild(gridCellElement);
-    this.gridCellElement = gridCellElement;
+    gridElement.append(gridcellElement);
+    this.gridcellElement = gridcellElement;
   }
-
   #renderHtmlStyling() {
     const {
-      gridCellElement,
+      gridcellElement,
       grid: {
         settings: { cellSize, borderSize, borderColor },
       },
     } = this;
 
-    Object.assign(gridCellElement.style, {
+    Object.assign(gridcellElement.style, {
       width: `${cellSize}px`,
       height: `${cellSize}px`,
       border: `${borderSize}px solid ${borderColor}`,
     });
 
-    gridCellElement.setAttribute("draggable", true);
+    gridcellElement.setAttribute("draggable", true);
   }
-
-  #renderHtmlAttributes() {
+  #renderAttributes() {
     const {
-      grid: { numRows, numCols },
+      grid: { numCols, numRows },
     } = this;
 
     this.isBlocked = false;
     this.isOutCell = this.position === "0-0";
     this.isInCell = this.position === `${numRows - 1}-${numCols - 1}`;
   }
-
-  renderGridCellsDynamics() {
-    this.gridCellElement.classList[this.isBlocked ? "add" : "remove"](
+  renderGridcellDynamics() {
+    this.gridcellElement.classList[this.isBlocked ? "add" : "remove"](
       "blocked"
     );
-    this.gridCellElement.classList[this.isInCell ? "add" : "remove"](
+    this.gridcellElement.classList[this.isOutCell ? "add" : "remove"](
       "out-cell"
     );
-    this.gridCellElement.classList[this.isOutCell ? "add" : "remove"](
-      "in-cell"
-    );
-  }
-
-  #renderEvents() {
-    this.#renderClickEvent();
-    this.#renderHoverEvent();
-    this.#renderDragDropEvents();
-  }
-
-  #renderClickEvent() {
-    const { gridCellElement } = this;
-
-    gridCellElement.addEventListener("click", () => {
-      if (this.isInCell || this.isOutCell) {
-        return;
-      }
-
-      this.isBlocked = !this.isBlocked;
-      this.renderGridCellsDynamics();
-    });
-  }
-
-  #renderHoverEvent() {
-    const { gridCellElement } = this;
-
-    gridCellElement.addEventListener("mouseover", () => {
-      if (this.isInCell || this.isOutCell) {
-        gridCellElement.style.cursor = "grab";
-      } else if (!this.isBlocked) {
-        gridCellElement.style.cursor = "pointer";
-      } else {
-        gridCellElement.style.cursor = "crosshair";
-      }
-    });
-  }
-
-  #renderDragDropEvents() {
-    const { gridCellElement, grid } = this;
-
-    gridCellElement.addEventListener("dragover", (event) => {
-      if (downAllowDrop.call(this)) return;
-      event.preventDefault();
-    });
-
-    gridCellElement.addEventListener("dragstart", (event) => {
-      if (downAllowDrag.call(this)) {
-        event.preventDefault();
-        return;
-      }
-
-      grid.draggedGridCell = this;
-    });
-
-    gridCellElement.addEventListener("drop", () => {
-      this.resetCell();
-
-      this.isOutCell = grid.draggedGridCell.isOutCell;
-      this.isInCell = grid.draggedGridCell.isInCell;
-
-      this.renderGridCellsDynamics();
-
-      grid.draggedGridCell.resetCell();
-      // grid.draw();
-    });
-
-    function downAllowDrop() {
-      return !this.isInCell && !this.isInCell;
-    }
-
-    function downAllowDrag() {
-      const { gridCellElement, grid } = this;
-
-      if (grid.draggedGridCell.gridCellElement === gridCellElement) return true;
-      if (grid.draggedGridCell.gridCellElement && this.isInCell) return true;
-      if (grid.draggedGridCell.gridCellElement && this.isOutCell) return true;
-
-      return false;
-    }
+    this.gridcellElement.classList[this.isInCell ? "add" : "remove"]("in-cell");
   }
 
   resetCell() {
@@ -152,7 +70,7 @@ class GridCell {
     this.isOutCell = false;
     this.isBlocked = false;
 
-    this.renderGridCellsDynamics();
+    this.renderGridcellDynamics();
   }
 }
 
