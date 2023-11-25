@@ -7,7 +7,7 @@ export default function () {
 function renderClickEvent() {
   const { grid, gridcellElement } = this;
 
-  gridcellElement.addEventListener("click", (_) => {
+  gridcellElement.addEventListener("click", () => {
     if (this.isOutCell || this.isInCell) return;
 
     this.isBlocked = !this.isBlocked;
@@ -19,7 +19,7 @@ function renderClickEvent() {
 function renderHoverEvent() {
   const { gridcellElement } = this;
 
-  gridcellElement.addEventListener("mouseover", (_) => {
+  gridcellElement.addEventListener("mouseover", () => {
     if (this.isOutCell || this.isInCell) {
       gridcellElement.style.cursor = "grab";
     } else if (!this.isBlocked) {
@@ -47,7 +47,7 @@ function renderDragDropEvents() {
     grid.draggedGridcell = this;
   });
 
-  gridcellElement.addEventListener("drop", (_) => {
+  gridcellElement.addEventListener("drop", () => {
     this.resetCell();
 
     this.isOutCell = grid.draggedGridcell.isOutCell;

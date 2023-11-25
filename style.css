@@ -19,3 +19,14 @@ body {
 .gridcell.in-cell {
   background-color: coral;
 }
+
+svg {
+  position: fixed;
+  z-index: -1;
+}
+
+svg path {
+  fill: none;
+  stroke-width: 3px;
+  stroke: red;
+}
